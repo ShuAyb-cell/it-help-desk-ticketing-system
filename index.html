@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT Help Desk Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f7fb;
+      color: #222;
+    }
+
+    .header {
+      background: #1f3c88;
+      color: white;
+      padding: 20px 30px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 25px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .card h3 {
+      margin: 0 0 10px 0;
+      font-size: 15px;
+      color: #666;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+    }
+
+    .section h2 {
+      margin-top: 0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    input, select, textarea, button {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+      grid-column: span 2;
+    }
+
+    button {
+      background: #1f3c88;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #162d63;
+    }
+
+    .delete-btn {
+      background: #b91c1c;
+    }
+
+    .delete-btn:hover {
+      background: #991b1b;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #e5e5e5;
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f8f9fc;
+    }
+
+    .badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .open { background: #dbeafe; color: #1d4ed8; }
+    .progress { background: #fef3c7; color: #b45309; }
+    .resolved { background: #dcfce7; color: #15803d; }
+    .closed { background: #e5e7eb; color: #374151; }
+
+    .low { background: #e0f2fe; color: #0369a1; }
+    .medium { background: #fef3c7; color: #b45309; }
+    .high { background: #fee2e2; color: #b91c1c; }
+    .critical { background: #fecaca; color: #991b1b; }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-direction: column;
+    }
+
+    .actions select,
+    .actions input {
+      min-width: 140px;
+    }
+
+    .message {
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      display: none;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .message.success {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .message.error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    @media (max-width: 900px) {
+      .cards, .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      textarea {
+        grid-column: span 1;
+      }
+
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        margin-bottom: 15px;
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 10px;
+      }
+
+      td {
+        border: none;
+        padding: 8px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">IT Help Desk Dashboard</div>
+
+  <div class="container">
+    <div id="messageBox" class="message"></div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Total Tickets</h3>
+        <p id="totalCount">0</p>
+      </div>
+      <div class="card">
+        <h3>Open</h3>
+        <p id="openCount">0</p>
+      </div>
+      <div class="card">
+        <h3>In Progress</h3>
+        <p id="progressCount">0</p>
+      </div>
+      <div class="card">
+        <h3>Resolved</h3>
+        <p id="resolvedCount">0</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Create New Ticket</h2>
+      <div class="form-grid">
+        <input id="requester" placeholder="Requester Name" />
+        <input id="title" placeholder="Ticket Title" />
+        <select id="priority">
+          <option value="Low">Low</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High</option>
+          <option value="Critical">Critical</option>
+        </select>
+        <select id="category">
+          <option value="Hardware">Hardware</option>
+          <option value="Software">Software</option>
+          <option value="Network">Network</option>
+          <option value="Account Access">Account Access</option>
+          <option value="Security">Security</option>
+          <option value="General">General</option>
+        </select>
+        <textarea id="description" placeholder="Describe the issue..."></textarea>
+      </div>
+      <br />
+      <button onclick="createTicket()">Submit Ticket</button>
+    </div>
+
+    <div class="section">
+      <h2>All Tickets</h2>
+      <button onclick="loadTickets()">Refresh Tickets</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Ticket</th>
+            <th>Requester</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Category</th>
+            <th>Assigned To</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="ticketTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://127.0.0.1:8000";
+
+    function showMessage(text, type) {
+      const box = document.getElementById("messageBox");
+      box.textContent = text;
+      box.className = `message ${type}`;
+      setTimeout(() => {
+        box.className = "message";
+        box.textContent = "";
+      }, 2500);
+    }
+
+    function getStatusClass(status) {
+      if (status === "Open") return "open";
+      if (status === "In Progress") return "progress";
+      if (status === "Resolved") return "resolved";
+      if (status === "Closed") return "closed";
+      return "open";
+    }
+
+    function getPriorityClass(priority) {
+      if (priority === "Low") return "low";
+      if (priority === "Medium") return "medium";
+      if (priority === "High") return "high";
+      if (priority === "Critical") return "critical";
+      return "medium";
+    }
+
+    async function createTicket() {
+      const requester = document.getElementById("requester").value.trim();
+      const title = document.getElementById("title").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const priority = document.getElementById("priority").value;
+      const category = document.getElementById("category").value;
+
+      if (!requester || !title || !description) {
+        showMessage("Please fill in requester, title, and description.", "error");
+        return;
+      }
+
+      const response = await fetch(API + "/tickets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          requester,
+          title,
+          description,
+          priority,
+          category
+        })
+      });
+
+      if (!response.ok) {
+        showMessage("Could not create ticket.", "error");
+        return;
+      }
+
+      document.getElementById("requester").value = "";
+      document.getElementById("title").value = "";
+      document.getElementById("description").value = "";
+      document.getElementById("priority").value = "Medium";
+      document.getElementById("category").value = "Hardware";
+
+      showMessage("Ticket created successfully.", "success");
+      loadTickets();
+    }
+
+    async function updateTicket(id) {
+      const status = document.getElementById(`status-${id}`).value;
+      const assigned_to = document.getElementById(`assigned-${id}`).value.trim();
+
+      const response = await fetch(API + `/tickets/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status,
+          assigned_to
+        })
+      });
+
+      if (!response.ok) {
+        showMessage("Could not update ticket.", "error");
+        return;
+      }
+
+      showMessage("Ticket updated successfully.", "success");
+      loadTickets();
+    }
+
+    async function deleteTicket(id) {
+      const response = await fetch(API + `/tickets/${id}`, {
+        method: "DELETE"
+      });
+
+      if (!response.ok) {
+        showMessage("Could not delete ticket.", "error");
+        return;
+      }
+
+      showMessage("Ticket deleted successfully.", "success");
+      loadTickets();
+    }
+
+    async function loadTickets() {
+      const response = await fetch(API + "/tickets");
+      const tickets = await response.json();
+
+      const table = document.getElementById("ticketTable");
+      table.innerHTML = "";
+
+      let openCount = 0;
+      let progressCount = 0;
+      let resolvedCount = 0;
+
+      tickets.forEach(ticket => {
+        if (ticket.status === "Open") openCount++;
+        if (ticket.status === "In Progress") progressCount++;
+        if (ticket.status === "Resolved") resolvedCount++;
+
+        table.innerHTML += `
+          <tr>
+            <td>
+              <strong>${ticket.ticket_number}</strong><br>
+              ${ticket.title}<br>
+              <small>${ticket.description}</small>
+            </td>
+            <td>${ticket.requester}</td>
+            <td><span class="badge ${getPriorityClass(ticket.priority)}">${ticket.priority}</span></td>
+            <td><span class="badge ${getStatusClass(ticket.status)}">${ticket.status}</span></td>
+            <td>${ticket.category}</td>
+            <td>${ticket.assigned_to}</td>
+            <td>${ticket.created_at}</td>
+            <td>
+              <div class="actions">
+                <select id="status-${ticket.id}">
+                  <option value="Open" ${ticket.status === "Open" ? "selected" : ""}>Open</option>
+                  <option value="In Progress" ${ticket.status === "In Progress" ? "selected" : ""}>In Progress</option>
+                  <option value="Resolved" ${ticket.status === "Resolved" ? "selected" : ""}>Resolved</option>
+                  <option value="Closed" ${ticket.status === "Closed" ? "selected" : ""}>Closed</option>
+                </select>
+                <input id="assigned-${ticket.id}" value="${ticket.assigned_to}" placeholder="Assign technician">
+                <button onclick="updateTicket(${ticket.id})">Update</button>
+                <button class="delete-btn" onclick="deleteTicket(${ticket.id})">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      document.getElementById("totalCount").textContent = tickets.length;
+      document.getElementById("openCount").textContent = openCount;
+      document.getElementById("progressCount").textContent = progressCount;
+      document.getElementById("resolvedCount").textContent = resolvedCount;
+    }
+
+    loadTickets();
+  </script>
+</body>
+</html>
