@@ -73,3 +73,4 @@ DELETE /tickets/{id} → Delete ticket
 ## Author
 Shu’ayb Yusuf  
 https://github.com/ShuAyb-cell
+IT Help Desk Dashboard Link: file:///Users/shuayb/it-help-desk-ticketing-system/index.html
