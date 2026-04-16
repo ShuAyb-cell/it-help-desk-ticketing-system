@@ -3,7 +3,7 @@
 A full-stack IT support ticketing system built with FastAPI, SQLite, HTML, CSS, and JavaScript. This application allows users to create, manage, assign, and track IT support tickets through a simple dashboard.
 
 GitHub Repo: https://github.com/ShuAyb-cell/it-help-desk-ticketing-system  
-Live Demo (Local): http://127.0.0.1:8000/tickets
+Live Demo (Local): file:///Users/shuayb/it-help-desk-ticketing-system/index.html 
 
 ---
 
