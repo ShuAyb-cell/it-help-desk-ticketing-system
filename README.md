@@ -38,7 +38,7 @@ uvicorn main:app --reload
 
 4. Open the app:
 Open index.html in your browser  
-OR go to: http://127.0.0.1:8000/tickets  
+OR go to: file:///Users/shuayb/it-help-desk-ticketing-system/index.html  
 
 ---
 
